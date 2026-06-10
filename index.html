@@ -50,10 +50,10 @@
     <div id="storyOutput"></div>
 </div>
 
-<!-- Gemini API Connection Logic -->
+<!-- Updated Gemini API Connection Logic for New AQ Key Types -->
 <script>
     async function generateStory() {
-        // 1. Insert your free Gemini API key here
+        // 1. Insert your free Gemini AQ key here
         const API_KEY = "AQ.Ab8RN6IhXLQvXx38M0qDbv5nS10KAMtXWgDI0yyno_GyaW15nA";
         
         // 2. Get data from the form
@@ -69,14 +69,13 @@
             return;
         }
 
-        // 3. Clear old text and show loading message
         outputDiv.innerHTML = "";
         loadingDiv.style.display = "block";
 
-        // 4. Formulate the precise AI prompt
-        const promptText = `Write a short, engaging, and age-appropriate bedtime story for a ${age} named ${name}. The story theme or moral lesson should be about ${theme}. Keep the language positive and soothing for bedtime. Do not use markdown formatting like asterisks.`;
+        // 3. Formulate the precise AI prompt
+        const promptText = "Write a short, engaging, and age-appropriate bedtime story for a " + age + " named " + name + ". The story theme or moral lesson should be about " + theme + ". Keep the language positive and soothing for bedtime. Do not use markdown formatting like asterisks.";
 
-        // 5. Send request to Google Gemini API
+        // 4. Send request using modern modern endpoint settings compatible with auth tokens
         try {
             const url = `https://googleapis.com{API_KEY}`;
             
@@ -92,17 +91,17 @@
 
             const data = await response.json();
             
-            // 6. FIXED: Safely extracting data using exact array positions [0]
-            if (data.candidates && data.candidates[0].content && data.candidates[0].content.parts && data.candidates[0].content.parts[0].text) {
+            // 5. Read deeply-nested response structures cleanly
+            if (data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts && data.candidates[0].content.parts[0]) {
                 outputDiv.innerHTML = data.candidates[0].content.parts[0].text;
             } else if (data.error) {
                 outputDiv.innerHTML = "API Error: " + data.error.message;
             } else {
-                outputDiv.innerHTML = "The API key might be incorrect, or the safety filter blocked the prompt. Double-check your API key.";
+                outputDiv.innerHTML = "Verification failed. Please ensure the key copied from your dashboard matches completely.";
             }
         } catch (error) {
             console.error(error);
-            outputDiv.innerHTML = "Connection failed. Note: Some browsers block API keys when opening files directly from your desktop. If your key is correct, this will work perfectly once we put it online in the next step!";
+            outputDiv.innerHTML = "System connection failure. Please review your internet link or verification parameters.";
         } finally {
             loadingDiv.style.display = "none";
         }
