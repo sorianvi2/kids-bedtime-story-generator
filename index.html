@@ -3,13 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <!-- High-Ranking SEO Meta Tags for Google Search Automation -->
     <title>Free AI Kids Bedtime Story Generator | Personalized Children's Stories</title>
     <meta name="description" content="Create custom, personalized bedtime stories for kids instantly. Our free AI bedtime story generator makes unique, educational tales for toddlers and children.">
     <meta name="keywords" content="free kids bedtime story generator, personalized children's stories, custom toddler books, AI story maker for kids, short bedtime stories online">
-    
-    <!-- Simple, Clean Styling -->
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; color: #333; margin: 0; padding: 20px; text-align: center; }
         .container { max-width: 600px; margin: 0 auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
@@ -26,11 +22,9 @@
 <body>
 
 <div class="container">
-    <!-- SEO-Optimized Headings -->
     <h1>Free AI Kids Bedtime Story Generator</h1>
     <p class="subtitle">Create Personalized Children's Stories Instantly</p>
 
-    <!-- User Input Options -->
     <label for="childName">Child's Name:</label>
     <input type="text" id="childName" placeholder="e.g., Leo, Maya" required>
 
@@ -50,10 +44,9 @@
     <div id="storyOutput"></div>
 </div>
 
-<!-- Upgraded Script specifically targeting modern Google AQ tokens -->
 <script>
     async function generateStory() {
-        // 1. Paste your modern super-long AQ key inside the quotes below
+        // Paste your copied AQ key right here inside the quotes
         const API_KEY = "AQ.Ab8RN6IhXLQvXx38M0qDbv5nS10KAMtXWgDI0yyno_GyaW15nA";
         
         const name = document.getElementById('childName').value;
@@ -74,15 +67,11 @@
         const promptText = "Write a short, engaging, and age-appropriate bedtime story for a " + age + " named " + name + ". The story theme or moral lesson should be about " + theme + ". Keep the language positive and soothing for bedtime. Do not use markdown formatting like asterisks.";
 
         try {
-            // FIXED: Clean REST endpoint path without exposing credentials in the web parameter string
-            const url = `https://googleapis.com`;
+            const url = `https://googleapis.com{API_KEY}`;
             
             const response = await fetch(url, {
                 method: "POST",
-                headers: { 
-                    "Content-Type": "application/json",
-                    "x-goog-api-key": API_KEY // FIXED: Passing AQ token inside secure server engine headers
-                },
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     contents: [{ parts: [{ text: promptText }] }]
                 })
@@ -90,17 +79,26 @@
 
             const data = await response.json();
             
-            // 3. Process layout parameters smoothly
-            if (data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts && data.candidates[0].content.parts[0]) {
-                outputDiv.innerHTML = data.candidates[0].content.parts[0].text;
-            } else if (data.error) {
+            // FIXED BYPASS: Accessing properties using item methods to avoid layout indexing bugs
+            if (data && data.candidates && data.candidates.length > 0) {
+                const firstCandidate = data.candidates.at(0);
+                if (firstCandidate && firstCandidate.content && firstCandidate.content.parts) {
+                    const firstPart = firstCandidate.content.parts.at(0);
+                    if (firstPart && firstPart.text) {
+                        outputDiv.innerHTML = firstPart.text;
+                        return;
+                    }
+                }
+            }
+            
+            if (data.error) {
                 outputDiv.innerHTML = "Google Server Notice: " + data.error.message;
             } else {
-                outputDiv.innerHTML = "System verification update complete. Try refreshing your link.";
+                outputDiv.innerHTML = "Response received, but data could not be parsed. Check key authorization parameters.";
             }
         } catch (error) {
             console.error(error);
-            outputDiv.innerHTML = "System link error. If your internet is running fine, this indicates a simple key mismatch inside your code parameters.";
+            outputDiv.innerHTML = "Connection failure occurred. Please review your setup parameters.";
         } finally {
             loadingDiv.style.display = "none";
         }
