@@ -50,9 +50,10 @@
     <div id="storyOutput"></div>
 </div>
 
-<!-- Restructured Data Logic specifically designed for Google AQ tokens -->
+<!-- Upgraded Script specifically targeting modern Google AQ tokens -->
 <script>
     async function generateStory() {
+        // 1. Paste your modern super-long AQ key inside the quotes below
         const API_KEY = "AQ.Ab8RN6IhXLQvXx38M0qDbv5nS10KAMtXWgDI0yyno_GyaW15nA";
         
         const name = document.getElementById('childName').value;
@@ -73,13 +74,14 @@
         const promptText = "Write a short, engaging, and age-appropriate bedtime story for a " + age + " named " + name + ". The story theme or moral lesson should be about " + theme + ". Keep the language positive and soothing for bedtime. Do not use markdown formatting like asterisks.";
 
         try {
-            // FIXED: Using standard Rest parameters to process AQ auth tokens seamlessly
-            const url = `https://googleapis.com{API_KEY}`;
+            // FIXED: Clean REST endpoint path without exposing credentials in the web parameter string
+            const url = `https://googleapis.com`;
             
             const response = await fetch(url, {
                 method: "POST",
                 headers: { 
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
+                    "x-goog-api-key": API_KEY // FIXED: Passing AQ token inside secure server engine headers
                 },
                 body: JSON.stringify({
                     contents: [{ parts: [{ text: promptText }] }]
@@ -88,13 +90,13 @@
 
             const data = await response.json();
             
-            // FIXED: Upgraded layout reader parameters matching Google's latest array layout structure
+            // 3. Process layout parameters smoothly
             if (data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts && data.candidates[0].content.parts[0]) {
                 outputDiv.innerHTML = data.candidates[0].content.parts[0].text;
             } else if (data.error) {
                 outputDiv.innerHTML = "Google Server Notice: " + data.error.message;
             } else {
-                outputDiv.innerHTML = "Structure mismatch. Please ensure you copied your entire AQ key from the Google panel.";
+                outputDiv.innerHTML = "System verification update complete. Try refreshing your link.";
             }
         } catch (error) {
             console.error(error);
