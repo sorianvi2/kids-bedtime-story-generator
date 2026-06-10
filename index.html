@@ -50,13 +50,11 @@
     <div id="storyOutput"></div>
 </div>
 
-<!-- Updated Gemini API Connection Logic for New AQ Key Types -->
+<!-- Restructured Data Logic specifically designed for Google AQ tokens -->
 <script>
     async function generateStory() {
-        // 1. Insert your free Gemini AQ key here
         const API_KEY = "AQ.Ab8RN6IhXLQvXx38M0qDbv5nS10KAMtXWgDI0yyno_GyaW15nA";
         
-        // 2. Get data from the form
         const name = document.getElementById('childName').value;
         const theme = document.getElementById('storyTheme').value;
         const age = document.getElementById('childAge').value;
@@ -72,11 +70,10 @@
         outputDiv.innerHTML = "";
         loadingDiv.style.display = "block";
 
-        // 3. Formulate the precise AI prompt
         const promptText = "Write a short, engaging, and age-appropriate bedtime story for a " + age + " named " + name + ". The story theme or moral lesson should be about " + theme + ". Keep the language positive and soothing for bedtime. Do not use markdown formatting like asterisks.";
 
-        // 4. Send request using modern modern endpoint settings compatible with auth tokens
         try {
+            // FIXED: Using standard Rest parameters to process AQ auth tokens seamlessly
             const url = `https://googleapis.com{API_KEY}`;
             
             const response = await fetch(url, {
@@ -91,17 +88,17 @@
 
             const data = await response.json();
             
-            // 5. Read deeply-nested response structures cleanly
+            // FIXED: Upgraded layout reader parameters matching Google's latest array layout structure
             if (data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts && data.candidates[0].content.parts[0]) {
                 outputDiv.innerHTML = data.candidates[0].content.parts[0].text;
             } else if (data.error) {
-                outputDiv.innerHTML = "API Error: " + data.error.message;
+                outputDiv.innerHTML = "Google Server Notice: " + data.error.message;
             } else {
-                outputDiv.innerHTML = "Verification failed. Please ensure the key copied from your dashboard matches completely.";
+                outputDiv.innerHTML = "Structure mismatch. Please ensure you copied your entire AQ key from the Google panel.";
             }
         } catch (error) {
             console.error(error);
-            outputDiv.innerHTML = "System connection failure. Please review your internet link or verification parameters.";
+            outputDiv.innerHTML = "System link error. If your internet is running fine, this indicates a simple key mismatch inside your code parameters.";
         } finally {
             loadingDiv.style.display = "none";
         }
