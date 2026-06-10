@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- High-Ranking SEO Meta Tags for Google Search Automation -->
+    <title>Free AI Kids Bedtime Story Generator | Personalized Children's Stories</title>
+    <meta name="description" content="Create custom, personalized bedtime stories for kids instantly. Our free AI bedtime story generator makes unique, educational tales for toddlers and children.">
+    <meta name="keywords" content="free kids bedtime story generator, personalized children's stories, custom toddler books, AI story maker for kids, short bedtime stories online">
+    
+    <!-- Simple, Clean Styling -->
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; color: #333; margin: 0; padding: 20px; text-align: center; }
+        .container { max-width: 600px; margin: 0 auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        h1 { color: #2c3e50; font-size: 28px; margin-bottom: 5px; }
+        p.subtitle { color: #7f8c8d; font-size: 14px; margin-top: 0; margin-bottom: 25px; }
+        label { display: block; font-weight: bold; margin-bottom: 8px; text-align: left; color: #34495e; }
+        input, select { width: 100%; padding: 12px; margin-bottom: 20px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-size: 16px; }
+        button { width: 100%; background-color: #3498db; color: white; border: none; padding: 14px; border-radius: 6px; font-size: 18px; font-weight: bold; cursor: pointer; transition: background 0.2s; }
+        button:hover { background-color: #2980b9; }
+        #storyOutput { margin-top: 30px; padding: 20px; border-top: 2px solid #eee; text-align: left; line-height: 1.6; font-size: 16px; white-space: pre-line; }
+        .loading { display: none; color: #7f8c8d; font-style: italic; margin-top: 15px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- SEO-Optimized Headings -->
+    <h1>Free AI Kids Bedtime Story Generator</h1>
+    <p class="subtitle">Create Personalized Children's Stories Instantly</p>
+
+    <!-- User Input Options -->
+    <label for="childName">Child's Name:</label>
+    <input type="text" id="childName" placeholder="e.g., Leo, Maya" required>
+
+    <label for="storyTheme">Story Theme or Lesson:</label>
+    <input type="text" id="storyTheme" placeholder="e.g., Sharing, Space Adventure, Talking Animals" required>
+
+    <label for="childAge">Child's Age Group:</label>
+    <select id="childAge">
+        <option value="Toddler (2-4 years old)">Toddler (2-4 years old)</option>
+        <option value="Preschooler (5-7 years old)">Preschooler (5-7 years old)</option>
+        <option value="Big Kid (8+ years old)">Big Kid (8+ years old)</option>
+    </select>
+
+    <button onclick="generateStory()">✨ Generate Bedtime Story</button>
+    
+    <div id="loadingMessage" class="loading">🪄 Creating a magical story, please wait...</div>
+    <div id="storyOutput"></div>
+</div>
+
+<!-- Gemini API Connection Logic -->
+<script>
+    async function generateStory() {
+        // 1. Insert your free Gemini API key here
+        const API_KEY = "AQ.Ab8RN6IhXLQvXx38M0qDbv5nS10KAMtXWgDI0yyno_GyaW15nA";
+        
+        // 2. Get data from the form
+        const name = document.getElementById('childName').value;
+        const theme = document.getElementById('storyTheme').value;
+        const age = document.getElementById('childAge').value;
+        
+        const outputDiv = document.getElementById('storyOutput');
+        const loadingDiv = document.getElementById('loadingMessage');
+        
+        if(!name || !theme) {
+            alert("Please fill out the name and theme fields!");
+            return;
+        }
+
+        // 3. Clear old text and show loading message
+        outputDiv.innerHTML = "";
+        loadingDiv.style.display = "block";
+
+        // 4. Formulate the precise AI prompt
+        const promptText = `Write a short, engaging, and age-appropriate bedtime story for a ${age} named ${name}. The story theme or moral lesson should be about ${theme}. Keep the language positive and soothing for bedtime. Do not use markdown formatting like asterisks.`;
+
+        // 5. Send request to Google Gemini API
+        try {
+            const url = `https://googleapis.com{API_KEY}`;
+            
+            const response = await fetch(url, {
+                method: "POST",
+                headers: { 
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    contents: [{ parts: [{ text: promptText }] }]
+                })
+            });
+
+            const data = await response.json();
+            
+            // 6. FIXED: Safely extracting data using exact array positions [0]
+            if (data.candidates && data.candidates[0].content && data.candidates[0].content.parts && data.candidates[0].content.parts[0].text) {
+                outputDiv.innerHTML = data.candidates[0].content.parts[0].text;
+            } else if (data.error) {
+                outputDiv.innerHTML = "API Error: " + data.error.message;
+            } else {
+                outputDiv.innerHTML = "The API key might be incorrect, or the safety filter blocked the prompt. Double-check your API key.";
+            }
+        } catch (error) {
+            console.error(error);
+            outputDiv.innerHTML = "Connection failed. Note: Some browsers block API keys when opening files directly from your desktop. If your key is correct, this will work perfectly once we put it online in the next step!";
+        } finally {
+            loadingDiv.style.display = "none";
+        }
+    }
+</script>
+
+</body>
+</html>
